@@ -10,6 +10,3 @@ navigator.geolocation.getCurrentPosition(
   () => console.log("failed to get geolocation"),
   options
 );
-
-const BINGMAPKEY =
-  "As0RhxAvW8aRwrUazRj9Xu4x1q_piBSdhJgKhTWOG3BFDww373peTLdm-GZRyfq4";
