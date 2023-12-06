@@ -25,15 +25,15 @@
       <aside class="sidebar">
         <div class="header">
           <img src="imgs/logo.png" alt="pin" class="logo" />
-          <h1>mapty</h1>
+          <!-- <h1>mapty</h1> -->
         </div>
         <div class="workout-container">
           <form class="register-record">
             <label class="form-label">
               <span class="label-text">type</span>
-              <select name="workout-type" id="workout-type">
-                <option value="running">running</option>
-                <option value="cycling">cycling</option>
+              <select name="workout-type" id="workout-type" class="form-field">
+                <option value="running">Running</option>
+                <option value="cycling">Cycling</option>
               </select>
             </label>
             <label class="form-label">
@@ -43,33 +43,37 @@
                 name="workout-distance"
                 id="workout-distance"
                 placeholder="km"
+                class="form-field"
               />
             </label>
             <label class="form-label">
               <span class="label-text">duration</span>
               <input
-                type="number"
+                type="text"
                 name="workout-duration"
                 id="workout-duration"
                 placeholder="min"
+                class="form-field"
               />
             </label>
             <label class="form-label">
               <span class="label-text">cadence</span>
               <input
-                type="number"
+                type="text"
                 name="workout-cadence"
                 id="workout-cadence"
                 placeholder="step/min"
+                class="form-field"
               />
             </label>
-            <label class="form-label" hidden>
+            <label class="form-label hidden-field" hidden>
               <span class="label-text">elev gain</span>
               <input
                 type="number"
                 name="workout-elev-gain"
                 id="workout-elev-gain"
                 placeholder="meters"
+                class="form-field"
               />
             </label>
           </form>
@@ -129,7 +133,7 @@
         <p class="copyright">
           &copy; Copyright by <a href="#" class="author">Jonas Schmedtmann</a>.
           Use for learning or your portfolio. Don't use to teach. Don't claim as
-          your own. Cloned by <a href="#" class="author">asterodeia</a>.
+          your own. <br />Cloned by <a href="#" class="author">asterodeia</a>.
         </p>
       </aside>
       <div id="map"></div>
