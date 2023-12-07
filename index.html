@@ -28,7 +28,7 @@
           <!-- <h1>mapty</h1> -->
         </div>
         <div class="workout-container">
-          <form class="register-record">
+          <form class="register-record hidden">
             <label class="form-label">
               <span class="label-text">type</span>
               <select name="workout-type" id="workout-type" class="form-field">
@@ -76,6 +76,8 @@
                 class="form-field"
               />
             </label>
+            <!-- use this to enable enter key submitting -->
+            <button type="submit" style="display: none">submit</button>
           </form>
           <ul class="workout-list">
             <li class="workout workout--running">
