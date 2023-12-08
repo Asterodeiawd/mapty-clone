@@ -82,10 +82,21 @@ const _handleFormSubmit = function (e) {
     return;
   }
 
+<<<<<<< Updated upstream
   e.preventDefault();
 
   let workout = {};
   workout["coords"] = _clickCoord;
+=======
+  // TODO: later change here!
+  const id = _workouts.length;
+  if (type === "running") {
+    workout = new Workout({ id });
+  }
+  const workout = { type };
+  let fields;
+  workout["coords"] = _event.latlng;
+>>>>>>> Stashed changes
 
   // workout data
   if (data["type"] === "running") {
@@ -97,3 +108,161 @@ const _handleFormSubmit = function (e) {
 };
 
 form.addEventListener("submit", _handleFormSubmit);
+
+class Workout {
+  #id;
+  #type;
+  #distance;
+  #duration;
+  #coords;
+  #date;
+
+  constructor({ id, type, distance, duration, coords }) {
+    this.#id = id;
+    this.#type = type;
+    this.#distance = distance;
+    this.#duration = duration;
+    this.#date = new Date();
+    this.#coords = coords;
+  }
+
+  get distance() {
+    return this.#distance;
+  }
+
+  get duration() {
+    return this.#duration;
+  }
+  get speed() {
+    return this.#distance / this.#duration;
+  }
+
+  get coords() {
+    return this.#coords;
+  }
+
+  get date() {
+    return this.#date;
+  }
+
+  get type() {
+    return this.#type;
+  }
+
+  get id() {
+    return this.#id;
+  }
+
+  getFormattedDate() {
+    const monthNames = [
+      "January",
+      "Feburay",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    return `${monthNames[this.#date.getMonth()]} ${this.#date.getDay()}`;
+  }
+
+  render(parentNode) {
+    parentNode.insertAdjacentHTML("afterbegin", this._getRenderedHTML());
+  }
+}
+
+class Running extends Workout {
+  #cadence;
+
+  constructor({ id, type, distance, duration, coords, cadence }) {
+    super({ id, type, distance, duration, coords });
+    this.#cadence = cadence;
+  }
+
+  get cadence() {
+    return this.#cadence;
+  }
+
+  _getRenderedHTML() {
+    const html = `<li class="workout workout--running" data-id=${this.id}>
+      <h2 class="workout-title">
+        Running on <span class="workout-date">${this.getFormattedDate()}</span>
+      </h2>
+      <div class="workout-details">
+        <span class="detail-icon">🏃‍♂️</span>
+        <span class="detail-value">${this.distance}</span>
+        <span class="detail-unit">km</span>
+      </div>
+      <div class="workout-details">
+        <span class="detail-icon">⏱</span>
+        <span class="detail-value">${this.duration}</span>
+        <span class="detail-unit">min</span>
+      </div>
+      <div class="workout-details">
+        <span class="detail-icon">⚡️</span>
+        <span class="detail-value">${this.speed}</span>
+        <span class="detail-unit">min/km</span>
+      </div>
+      <div class="workout-details">
+        <span class="detail-icon">🦶🏼</span>
+        <span class="detail-value">${this.cadence}</span>
+        <span class="detail-unit">spm</span>
+      </div>
+    </li>`;
+
+    return html;
+  }
+}
+
+class Cycling extends Workout {
+  #elevGain;
+
+  constructor(id, type, distance, duration, coords, elevGain) {
+    super(id, type, distance, duration, coords);
+    this.#elevGain = elevGain;
+  }
+
+  get speed() {
+    return (this.distance * 60) / this.duration;
+  }
+
+  get elevGain() {
+    return this.#elevGain;
+  }
+
+  _getRenderedHTML() {
+    const html = `<li class="workout workout--cycling" data-id=${this.id}>
+      <h2 class="workout-title">
+        Cycling on <span class="workout-date">${this.getFormattedDate()}</span>
+      </h2>
+      <div class="workout-details">
+        <span class="detail-icon">🚴‍♀️</span>
+        <span class="detail-value">${this.distance}</span>
+        <span class="detail-unit">km</span>
+      </div>
+      <div class="workout-details">
+        <span class="detail-icon">⏱</span>
+        <span class="detail-value">${this.duration}</span>
+        <span class="detail-unit">min</span>
+      </div>
+      <div class="workout-details">
+        <span class="detail-icon">⚡️</span>
+        <span class="detail-value">${this.speed}</span>
+        <span class="detail-unit">km/h</span>
+      </div>
+      <div class="workout-details">
+        <span class="detail-icon">⛰</span>
+        <span class="detail-value">${this.elevGain}</span>
+        <span class="detail-unit">m</span>
+      </div>
+    </li>`;
+
+    return html;
+  }
+}
