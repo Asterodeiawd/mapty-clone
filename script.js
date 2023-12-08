@@ -8,6 +8,7 @@ const tileMapUrl =
 const form = document.querySelector(".register-record");
 const _workouts = [];
 let _event;
+const _list = document.querySelector(".workout-list");
 
 const _getFormData = form => {
   const data = {};
@@ -28,6 +29,8 @@ const _getFormData = form => {
 const cadenceInput = form.querySelector("#workout-cadence");
 const elevGainInput = form.querySelector("#workout-elev-gain");
 const typeSelect = form.querySelector("#workout-type");
+const distanceField = form.querySelector("#workout-distance");
+
 const _changeFormType = type => {
   if (type === "running") {
     cadenceInput.closest(".form-label").classList.remove("hidden-field");
@@ -52,11 +55,10 @@ const _toCamelCase = text => {
 };
 
 const _renderWorkoutCard = workout => {
-  const list = document.querySelector(".workout-list");
   let html;
 
   if (workout.type === "running") {
-    html = `<li class="workout workout--running">
+    html = `<li class="workout workout--running" data-id=${workout.id}>
       <h2 class="workout-title">
         Running on <span class="workout-date">${workout.date}</span>
       </h2>
@@ -83,7 +85,7 @@ const _renderWorkoutCard = workout => {
     </li>`;
   } else {
     html = `
-    <li class="workout workout--cycling">
+    <li class="workout workout--cycling" data-id=${workout.id}>
       <h2 class="workout-title">
         Cycling on <span class="workout-date">${workout.date}</span>
       </h2>
@@ -110,12 +112,27 @@ const _renderWorkoutCard = workout => {
     </li>`;
   }
 
-  list.insertAdjacentHTML("afterbegin", html);
+  _list.insertAdjacentHTML("afterbegin", html);
 };
+
+_list.addEventListener("click", function (e) {
+  const target = e.target.closest(".workout");
+
+  if (!target) return;
+
+  const workout = _workouts.find(item => item.id === Number(target.dataset.id));
+  workout && map.setView(workout.coords);
+});
+
+const _openForm = () => {
+  const type = typeSelect.value;
+  _changeFormType(type);
+  form.classList.remove("hidden");
+};
+
 const handleMapClick = function (mapEvent) {
   // show register form
-  form.classList.remove("hidden");
-  const distanceField = form.querySelector("#workout-distance");
+  _openForm();
   distanceField.focus();
 
   _event = mapEvent;
@@ -135,7 +152,9 @@ navigator.geolocation.getCurrentPosition(pos => {
   map.on("click", handleMapClick);
 });
 
-const _checkValid = (...values) => true;
+const _checkValid = (...values) =>
+  values.every(value => value !== "" && !isNaN(Number(value)));
+
 const _checkPositive = (...values) => values.every(value => value > 0);
 
 const _renderMarker = workout => {
@@ -202,7 +221,7 @@ const _handleFormSubmit = function (e) {
   workout.date = `${monthNames[date.getMonth()]} ${date.getDay()}`;
 
   console.log(workout);
-
+  workout.id = _workouts.length;
   // add to global array of workouts
   _workouts.push(workout);
 

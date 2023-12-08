@@ -146,6 +146,7 @@ body {
   border-radius: 5px;
   border-left-width: 5px;
   border-left-style: solid;
+  cursor: pointer;
 }
 
 .workout--running {
