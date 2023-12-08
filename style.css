@@ -140,12 +140,13 @@ body {
 .workout {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  padding: 1.5rem 2.5rem;
+  padding: 1.5rem 2.25rem;
   background-color: var(--color-background-lighter);
   gap: 0.75rem 1.5rem;
   border-radius: 5px;
   border-left-width: 5px;
   border-left-style: solid;
+  cursor: pointer;
 }
 
 .workout--running {
@@ -163,19 +164,23 @@ body {
   color: var(--color-light--2);
 }
 
+.workout-details {
+  text-wrap: nowrap;
+}
+
 .detail-icon {
   font-size: 1.8rem;
 }
 
 .detail-value {
-  font-size: 1.6rem;
-  font-weight: 500;
+  font-size: 1.5rem;
+  /* font-weight: 500; */
   color: var(--color-light--2);
   margin-right: 0.4rem;
 }
 
 .detail-unit {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: var(--color-light);
   text-transform: uppercase;
@@ -203,4 +208,42 @@ body {
 #map {
   flex: 1 1 auto;
   background-color: var(--color-light);
+}
+
+.popup {
+  background-color: var(--color-background-lighter);
+  border-radius: 5px;
+  border-left: 5px solid var(--_border-left-color);
+  font-family: inherit;
+  font-size: 1.5rem;
+  --_border-left-color: var(
+    --border-left-color,
+    var(--color-background-lighter)
+  );
+}
+
+.popup--running {
+  --border-left-color: var(--color-running);
+}
+
+.popup--cycling {
+  --border-left-color: var(--color-cycling);
+}
+
+/* increase class weight by adding parent class names */
+.leaflet-popup .leaflet-popup-content-wrapper {
+  background-color: var(--color-background-lighter);
+}
+
+.leaflet-popup .leaflet-popup-content {
+  color: var(--color-light--2);
+}
+
+.leaflet-popup .leaflet-popup-tip {
+  background-color: var(--color-background-lighter);
+}
+
+.leaflet-container .leaflet-popup a.leaflet-popup-close-button {
+  color: var(--color-text);
+  font-weight: 600;
 }

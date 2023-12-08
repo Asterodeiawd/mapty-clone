@@ -28,7 +28,7 @@
           <!-- <h1>mapty</h1> -->
         </div>
         <div class="workout-container">
-          <form class="register-record">
+          <form class="register-record hidden">
             <label class="form-label">
               <span class="label-text">type</span>
               <select name="workout-type" id="workout-type" class="form-field">
@@ -66,7 +66,7 @@
                 class="form-field"
               />
             </label>
-            <label class="form-label hidden-field" hidden>
+            <label class="form-label hidden-field">
               <span class="label-text">elev gain</span>
               <input
                 type="number"
@@ -76,59 +76,10 @@
                 class="form-field"
               />
             </label>
+            <!-- use this to enable enter key submitting -->
+            <button type="submit" style="display: none">submit</button>
           </form>
-          <ul class="workout-list">
-            <li class="workout workout--running">
-              <h2 class="workout-title">
-                Running on <span class="workout-date">December 5</span>
-              </h2>
-              <div class="workout-details">
-                <span class="detail-icon">🏃‍♂️</span>
-                <span class="detail-value">12</span>
-                <span class="detail-unit">km</span>
-              </div>
-              <div class="workout-details">
-                <span class="detail-icon">⏱</span>
-                <span class="detail-value">22</span>
-                <span class="detail-unit">min</span>
-              </div>
-              <div class="workout-details">
-                <span class="detail-icon">⚡️</span>
-                <span class="detail-value">12</span>
-                <span class="detail-unit">km</span>
-              </div>
-              <div class="workout-details">
-                <span class="detail-icon">🦶🏼</span>
-                <span class="detail-value">12</span>
-                <span class="detail-unit">km</span>
-              </div>
-            </li>
-            <li class="workout workout--cycling">
-              <h2 class="workout-title">
-                Cycling on <span class="workout-date">December 5</span>
-              </h2>
-              <div class="workout-details">
-                <span class="detail-icon">🚴‍♀️</span>
-                <span class="detail-value">12</span>
-                <span class="detail-unit">km</span>
-              </div>
-              <div class="workout-details">
-                <span class="detail-icon">⏱</span>
-                <span class="detail-value">22</span>
-                <span class="detail-unit">min</span>
-              </div>
-              <div class="workout-details">
-                <span class="detail-icon">⚡️</span>
-                <span class="detail-value">12</span>
-                <span class="detail-unit">km</span>
-              </div>
-              <div class="workout-details">
-                <span class="detail-icon">⛰</span>
-                <span class="detail-value">12</span>
-                <span class="detail-unit">km</span>
-              </div>
-            </li>
-          </ul>
+          <ul class="workout-list"></ul>
         </div>
         <p class="copyright">
           &copy; Copyright by <a href="#" class="author">Jonas Schmedtmann</a>.
