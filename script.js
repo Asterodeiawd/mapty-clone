@@ -82,12 +82,6 @@ const _handleFormSubmit = function (e) {
     return;
   }
 
-<<<<<<< Updated upstream
-  e.preventDefault();
-
-  let workout = {};
-  workout["coords"] = _clickCoord;
-=======
   // TODO: later change here!
   const id = _workouts.length;
   if (type === "running") {
@@ -96,7 +90,6 @@ const _handleFormSubmit = function (e) {
   const workout = { type };
   let fields;
   workout["coords"] = _event.latlng;
->>>>>>> Stashed changes
 
   // workout data
   if (data["type"] === "running") {
