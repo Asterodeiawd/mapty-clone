@@ -12,7 +12,7 @@ let _event;
 const typeField = form.querySelector("#workout-type");
 const distanceField = form.querySelector("#workout-distance");
 const durationField = form.querySelector("#workout-duration");
-const elevGainField = form.querySelector("#workout-elevGain");
+const elevGainField = form.querySelector("#workout-elev-gain");
 const cadenceField = form.querySelector("#workout-cadence");
 
 const _getFormData = form => {
@@ -84,8 +84,19 @@ const _list = document.querySelector(".workout-list");
 
 const _changeFormType = type => {
   if (type === "running") {
+    elevGainField.closest(".form-label").classList.add("hidden-field");
+    cadenceField.closest(".form-label").classList.remove("hidden-field");
+  } else {
+    elevGainField.closest(".form-label").classList.remove("hidden-field");
+    cadenceField.closest(".form-label").classList.add("hidden-field");
   }
 };
+
+typeField.addEventListener("change", e => {
+  const type = e.target.value.toLowerCase();
+  _changeFormType(type);
+});
+
 const _handleFormSubmit = function (e) {
   e.preventDefault();
   // check values! later!!
