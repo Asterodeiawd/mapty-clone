@@ -7,39 +7,47 @@ const tileMapUrl =
 
 const form = document.querySelector(".register-record");
 const _workouts = [];
-let _clickCoord;
+let _event;
+
+const distanceField = form.querySelector("#workout-distance");
 
 const _getFormData = form => {
   const fieldIds = [
-    "#workout-type",
     "#workout-distance",
     "#workout-duration",
-    "#workout-cadence",
-    "#workout-elev-gain",
+    // "#workout-cadence",
+    // "#workout-elev-gain",
   ];
 
-  const formData = fieldIds.map(field => ({
-    [_toCamelCase(field.slice("#workout-".length))]: Number(
-      form.querySelector(field).value
-    ),
-  }));
+  const type = form.querySelector("#workout-type").value;
 
-  console.log(formData);
-  return formData;
+  if (type === "running") {
+    fieldIds.push("#workout-cadence");
+  } else {
+    fieldIds.push("#workout-elev-gain");
+  }
+  const data = {};
+  fieldIds.forEach(
+    field =>
+      (data[_toCamelCase(field.slice("#workout-".length))] = Number(
+        form.querySelector(field).value
+      ))
+  );
+
+  return { type, data };
 };
 
-const _toCamelCase = text => {
+const _toCamelCase = text =>
   text
+    .split("-")
     .map((word, index) =>
       index ? word[0].toUpperCase().concat(word.slice(1)) : word
     )
     .join("");
-};
 
 const handleMapClick = function (mapEvent) {
   // show register form
   form.classList.remove("hidden");
-  const distanceField = form.querySelector("#workout-distance");
   distanceField.focus();
 
   // const marker = L.marker(mapEvent.latlng);
@@ -51,8 +59,7 @@ const handleMapClick = function (mapEvent) {
 
   // marker.addTo(this);
   // marker.bindPopup(popup).openPopup();
-
-  _clickCoord = mapEvent.latlng;
+  _event = mapEvent;
 };
 
 navigator.geolocation.getCurrentPosition(pos => {
@@ -71,33 +78,33 @@ navigator.geolocation.getCurrentPosition(pos => {
 
 const _checkValid = (...values) => true;
 const _checkPositive = (...values) => true;
+const _list = document.querySelector(".workout-list");
 
 const _handleFormSubmit = function (e) {
+  e.preventDefault();
   // check values! later!!
-  const data = _getFormData(form);
-  console.log(data);
+  const { type, data } = _getFormData(form);
+  // TODO: later change here!
+  const id = _workouts.length;
+  let workout;
 
   if (!_checkValid(data) || !_checkPositive(data)) {
     alert("input must be positive numbers");
     return;
   }
 
-  // TODO: later change here!
-  const id = _workouts.length;
-  if (type === "running") {
-    workout = new Workout({ id });
-  }
-  const workout = { type };
-  let fields;
-  workout["coords"] = _event.latlng;
+  const params = { ...data, coords: _event.latlng, id, type };
 
-  // workout data
-  if (data["type"] === "running") {
-    const fields = ["distance", "duration", "cadence"];
-    fields.map(field => (workout[field] = data["field"]));
+  if (type === "running") {
+    workout = new Running(params);
   } else {
-    const fields = ["distance", "duration", "elevGain"];
+    workout = new Cycling(params);
   }
+
+  _workouts.push(workout);
+
+  // render in workout sidebar
+  workout.render(_list);
 };
 
 form.addEventListener("submit", _handleFormSubmit);
