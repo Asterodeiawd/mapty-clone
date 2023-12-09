@@ -121,7 +121,7 @@ const _handleFormSubmit = function (e) {
   _workouts.push(workout);
 
   // render in workout sidebar
-  workout.render(_list);
+  workout.renderCard(_list);
 };
 
 form.addEventListener("submit", _handleFormSubmit);
@@ -189,7 +189,7 @@ class Workout {
     return `${monthNames[this.#date.getMonth()]} ${this.#date.getDay()}`;
   }
 
-  render(parentNode) {
+  renderCard(parentNode) {
     parentNode.insertAdjacentHTML("afterbegin", this._getRenderedHTML());
   }
 }
