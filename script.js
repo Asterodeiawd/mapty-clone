@@ -9,7 +9,11 @@ const form = document.querySelector(".register-record");
 const _workouts = [];
 let _event;
 
+const typeField = form.querySelector("#workout-type");
 const distanceField = form.querySelector("#workout-distance");
+const durationField = form.querySelector("#workout-duration");
+const elevGainField = form.querySelector("#workout-elevGain");
+const cadenceField = form.querySelector("#workout-cadence");
 
 const _getFormData = form => {
   const fieldIds = [
@@ -19,9 +23,7 @@ const _getFormData = form => {
     // "#workout-elev-gain",
   ];
 
-  const type = form.querySelector("#workout-type").value;
-
-  if (type === "running") {
+  if (typeField.value === "running") {
     fieldIds.push("#workout-cadence");
   } else {
     fieldIds.push("#workout-elev-gain");
@@ -80,6 +82,10 @@ const _checkValid = (...values) => true;
 const _checkPositive = (...values) => true;
 const _list = document.querySelector(".workout-list");
 
+const _changeFormType = type => {
+  if (type === "running") {
+  }
+};
 const _handleFormSubmit = function (e) {
   e.preventDefault();
   // check values! later!!
