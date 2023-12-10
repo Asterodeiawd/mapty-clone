@@ -16,6 +16,7 @@ const elevGainField = form.querySelector("#workout-elev-gain");
 const cadenceField = form.querySelector("#workout-cadence");
 
 const _getFormData = form => {
+  let type;
   const fieldIds = [
     "#workout-distance",
     "#workout-duration",
@@ -25,8 +26,10 @@ const _getFormData = form => {
 
   if (typeField.value === "running") {
     fieldIds.push("#workout-cadence");
+    type = "running";
   } else {
     fieldIds.push("#workout-elev-gain");
+    type = "cycling";
   }
   const data = {};
   fieldIds.forEach(
@@ -52,15 +55,6 @@ const handleMapClick = function (mapEvent) {
   form.classList.remove("hidden");
   distanceField.focus();
 
-  // const marker = L.marker(mapEvent.latlng);
-  // const popup = L.popup({
-  //   autoClose: false,
-  //   closeOnClick: false,
-  //   className: "popup popup--running",
-  // }).setContent("🚴 his is added by script");
-
-  // marker.addTo(this);
-  // marker.bindPopup(popup).openPopup();
   _event = mapEvent;
 };
 
@@ -122,6 +116,11 @@ const _handleFormSubmit = function (e) {
 
   // render in workout sidebar
   workout.renderCard(_list);
+  workout.renderMapMarker(map);
+
+  // clear and close form
+  form.reset();
+  form.classList.add("hidden");
 };
 
 form.addEventListener("submit", _handleFormSubmit);
@@ -133,6 +132,7 @@ class Workout {
   #duration;
   #coords;
   #date;
+  #icon;
 
   constructor({ id, type, distance, duration, coords }) {
     this.#id = id;
@@ -141,6 +141,15 @@ class Workout {
     this.#duration = duration;
     this.#date = new Date();
     this.#coords = coords;
+    this.#icon = "";
+  }
+
+  get icon() {
+    return this.#icon;
+  }
+
+  set icon(value) {
+    this.#icon = value;
   }
 
   get distance() {
@@ -186,11 +195,26 @@ class Workout {
       "December",
     ];
 
-    return `${monthNames[this.#date.getMonth()]} ${this.#date.getDay()}`;
+    return `${monthNames[this.#date.getMonth()]} ${this.#date.getDate()}`;
   }
 
   renderCard(parentNode) {
     parentNode.insertAdjacentHTML("afterbegin", this._getRenderedHTML());
+  }
+
+  renderMapMarker(map) {
+    const marker = L.marker(this.#coords);
+    const message = `${this.icon} ${
+      this.type === "running" ? "Running" : "Cycling"
+    } on ${this.getFormattedDate()}`;
+    const popup = L.popup({
+      autoClose: false,
+      closeOnClick: false,
+      className: `popup popup--${this.#type}`,
+    }).setContent(message);
+
+    marker.addTo(map);
+    marker.bindPopup(popup).openPopup();
   }
 }
 
@@ -200,6 +224,7 @@ class Running extends Workout {
   constructor({ id, type, distance, duration, coords, cadence }) {
     super({ id, type, distance, duration, coords });
     this.#cadence = cadence;
+    this.icon = "🏃‍♂️";
   }
 
   get cadence() {
@@ -212,7 +237,7 @@ class Running extends Workout {
         Running on <span class="workout-date">${this.getFormattedDate()}</span>
       </h2>
       <div class="workout-details">
-        <span class="detail-icon">🏃‍♂️</span>
+        <span class="detail-icon">${this.icon}️</span>
         <span class="detail-value">${this.distance}</span>
         <span class="detail-unit">km</span>
       </div>
@@ -240,9 +265,10 @@ class Running extends Workout {
 class Cycling extends Workout {
   #elevGain;
 
-  constructor(id, type, distance, duration, coords, elevGain) {
-    super(id, type, distance, duration, coords);
+  constructor({ id, type, distance, duration, coords, elevGain }) {
+    super({ id, type, distance, duration, coords });
     this.#elevGain = elevGain;
+    this.icon = "🚴";
   }
 
   get speed() {
@@ -259,7 +285,7 @@ class Cycling extends Workout {
         Cycling on <span class="workout-date">${this.getFormattedDate()}</span>
       </h2>
       <div class="workout-details">
-        <span class="detail-icon">🚴‍♀️</span>
+        <span class="detail-icon">${this.icon}</span>
         <span class="detail-value">${this.distance}</span>
         <span class="detail-unit">km</span>
       </div>
