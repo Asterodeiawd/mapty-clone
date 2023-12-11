@@ -12,6 +12,13 @@ class Form {
 
   constructor(parentNode) {
     this.#parent = parentNode;
+
+    this.#parent
+      .querySelector(this.#fieldIds.type)
+      .addEventListener("change", () => {
+        this._changeFormType();
+        // this._clear();
+      });
   }
 
   get type() {
@@ -52,7 +59,12 @@ class Form {
   }
 
   show() {
+    const distanceField = this.#parent.querySelector(
+      this.#fieldIds.data["distance"]
+    );
+
     this.#parent.classList.remove("hidden");
+    distanceField.focus();
   }
 
   hide() {

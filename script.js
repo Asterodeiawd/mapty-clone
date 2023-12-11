@@ -9,23 +9,9 @@ const form = document.querySelector(".register-record");
 const _workouts = [];
 let _event;
 
-const typeField = form.querySelector("#workout-type");
-const distanceField = form.querySelector("#workout-distance");
-const durationField = form.querySelector("#workout-duration");
-const elevGainField = form.querySelector("#workout-elev-gain");
-const cadenceField = form.querySelector("#workout-cadence");
-
 const _list = document.querySelector(".workout-list");
 
 const frm = new Form(form);
-
-const _toCamelCase = text =>
-  text
-    .split("-")
-    .map((word, index) =>
-      index ? word[0].toUpperCase().concat(word.slice(1)) : word
-    )
-    .join("");
 
 _list.addEventListener("click", function (e) {
   const target = e.target.closest(".workout");
@@ -39,7 +25,6 @@ _list.addEventListener("click", function (e) {
 const handleMapClick = function (mapEvent) {
   // show register form
   frm.show();
-  distanceField.focus();
 
   _event = mapEvent;
 };
@@ -56,12 +41,6 @@ navigator.geolocation.getCurrentPosition(pos => {
   }).addTo(map);
 
   map.on("click", handleMapClick);
-});
-
-typeField.addEventListener("change", e => {
-  const type = e.target.value.toLowerCase();
-  // _changeFormType(type);
-  frm._changeFormType(type);
 });
 
 const _handleFormSubmit = function (e) {
