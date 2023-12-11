@@ -5,13 +5,12 @@ const map = L.map("map");
 const tileMapUrl =
   "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}";
 
-const form = document.querySelector(".register-record");
 const _workouts = [];
 let _event;
 
 const _list = document.querySelector(".workout-list");
 
-const frm = new Form(form);
+const form = new Form(".register-record");
 
 _list.addEventListener("click", function (e) {
   const target = e.target.closest(".workout");
@@ -24,7 +23,7 @@ _list.addEventListener("click", function (e) {
 
 const handleMapClick = function (mapEvent) {
   // show register form
-  frm.show();
+  form.show();
 
   _event = mapEvent;
 };
@@ -47,7 +46,7 @@ const _handleFormSubmit = function (e) {
   e.preventDefault();
 
   try {
-    const { type, data } = frm.getParsedData();
+    const { type, data } = form.getParsedData();
     // TODO: later change here!
     const id = _workouts.length;
     let workout;
@@ -67,12 +66,12 @@ const _handleFormSubmit = function (e) {
     workout.renderMapMarker(map);
 
     // clear and close form
-    frm._clear();
-    frm.hide();
+    form.reset();
+    form.hide();
   } catch (e) {
     alert(e);
     return;
   }
 };
 
-form.addEventListener("submit", _handleFormSubmit);
+form.on("submit", _handleFormSubmit);

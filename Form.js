@@ -10,8 +10,8 @@ class Form {
     },
   };
 
-  constructor(parentNode) {
-    this.#parent = parentNode;
+  constructor(parentSelector) {
+    this.#parent = document.querySelector(parentSelector);
 
     this.#parent
       .querySelector(this.#fieldIds.type)
@@ -71,7 +71,7 @@ class Form {
     this.#parent.classList.add("hidden");
   }
 
-  _clear() {
+  reset() {
     this.#parent.reset();
   }
 
@@ -90,5 +90,9 @@ class Form {
       elevGainField.closest(".form-label").classList.remove("hidden-field");
       cadenceField.closest(".form-label").classList.add("hidden-field");
     }
+  }
+
+  on(eventName, callback) {
+    this.#parent.addEventListener(eventName, callback);
   }
 }
