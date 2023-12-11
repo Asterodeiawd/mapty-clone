@@ -8,51 +8,47 @@ const tileMapUrl =
 const form = document.querySelector(".register-record");
 const _workouts = [];
 let _event;
-const _list = document.querySelector(".workout-list");
+
+const typeField = form.querySelector("#workout-type");
+const distanceField = form.querySelector("#workout-distance");
+const durationField = form.querySelector("#workout-duration");
+const elevGainField = form.querySelector("#workout-elev-gain");
+const cadenceField = form.querySelector("#workout-cadence");
 
 const _getFormData = form => {
+  let type;
+  const fieldIds = [
+    "#workout-distance",
+    "#workout-duration",
+    // "#workout-cadence",
+    // "#workout-elev-gain",
+  ];
+
+  if (typeField.value === "running") {
+    fieldIds.push("#workout-cadence");
+    type = "running";
+  } else {
+    fieldIds.push("#workout-elev-gain");
+    type = "cycling";
+  }
   const data = {};
-  const type = form.querySelector("#workout-type").value.toLowerCase();
-  const fieldIds = ["#workout-distance", "#workout-duration"];
-
-  fieldIds.push(type === "running" ? "#workout-cadence" : "#workout-elev-gain");
-
-  fieldIds.map(
+  fieldIds.forEach(
     field =>
-      (data[_toCamelCase(field.slice("#workout-".length))] =
-        form.querySelector(field).value)
+      (data[_toCamelCase(field.slice("#workout-".length))] = Number(
+        form.querySelector(field).value
+      ))
   );
 
   return { type, data };
 };
 
-const cadenceInput = form.querySelector("#workout-cadence");
-const elevGainInput = form.querySelector("#workout-elev-gain");
-const typeSelect = form.querySelector("#workout-type");
-const distanceField = form.querySelector("#workout-distance");
-
-const _changeFormType = type => {
-  if (type === "running") {
-    cadenceInput.closest(".form-label").classList.remove("hidden-field");
-    elevGainInput.closest(".form-label").classList.add("hidden-field");
-  } else {
-    cadenceInput.closest(".form-label").classList.add("hidden-field");
-    elevGainInput.closest(".form-label").classList.remove("hidden-field");
-  }
-};
-
-typeSelect.addEventListener("change", e => {
-  _changeFormType(e.target.value);
-});
-
-const _toCamelCase = text => {
-  return text
+const _toCamelCase = text =>
+  text
     .split("-")
     .map((word, index) =>
       index ? word[0].toUpperCase().concat(word.slice(1)) : word
     )
     .join("");
-};
 
 const _renderWorkoutCard = workout => {
   let html;
@@ -132,7 +128,7 @@ const _openForm = () => {
 
 const handleMapClick = function (mapEvent) {
   // show register form
-  _openForm();
+  form.classList.remove("hidden");
   distanceField.focus();
 
   _event = mapEvent;
@@ -152,30 +148,32 @@ navigator.geolocation.getCurrentPosition(pos => {
   map.on("click", handleMapClick);
 });
 
-const _checkValid = (...values) =>
-  values.every(value => value !== "" && !isNaN(Number(value)));
+const _checkValid = (...values) => true;
+const _checkPositive = (...values) => true;
+const _list = document.querySelector(".workout-list");
 
-const _checkPositive = (...values) => values.every(value => value > 0);
-
-const _renderMarker = workout => {
-  const popupMessage = `${
-    workout.type === "running" ? "🏃 Running" : "🚴‍♀️ Cycling"
-  } on ${workout.date}`;
-  const marker = L.marker(_event.latlng);
-  const popup = L.popup({
-    autoClose: false,
-    closeOnClick: false,
-    className: `popup popup--${workout.type}`,
-  }).setContent(popupMessage);
-
-  marker.addTo(map);
-  marker.bindPopup(popup).openPopup();
+const _changeFormType = type => {
+  if (type === "running") {
+    elevGainField.closest(".form-label").classList.add("hidden-field");
+    cadenceField.closest(".form-label").classList.remove("hidden-field");
+  } else {
+    elevGainField.closest(".form-label").classList.remove("hidden-field");
+    cadenceField.closest(".form-label").classList.add("hidden-field");
+  }
 };
+
+typeField.addEventListener("change", e => {
+  const type = e.target.value.toLowerCase();
+  _changeFormType(type);
+});
 
 const _handleFormSubmit = function (e) {
   e.preventDefault();
   // check values! later!!
   const { type, data } = _getFormData(form);
+  // TODO: later change here!
+  const id = _workouts.length;
+  let workout;
 
   if (
     !_checkValid(...Object.values(data)) ||
@@ -185,54 +183,23 @@ const _handleFormSubmit = function (e) {
     return;
   }
 
-  const workout = { type };
-  let fields;
-  workout["coords"] = _event.latlng;
+  const params = { ...data, coords: _event.latlng, id, type };
 
-  // workout data
   if (type === "running") {
-    fields = ["distance", "duration", "cadence"];
+    workout = new Running(params);
   } else {
-    fields = ["distance", "duration", "elevGain"];
+    workout = new Cycling(params);
   }
-  fields.forEach(field => (workout[field] = Number(data[field])));
 
-  // later use class inherit
-  workout.speed =
-    type === "running"
-      ? (workout.duration / workout.distance).toFixed(1)
-      : ((workout.distance * 60) / workout.duration).toFixed(1);
-
-  const monthNames = [
-    "January",
-    "Feburay",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const date = new Date();
-  workout.date = `${monthNames[date.getMonth()]} ${date.getDay()}`;
-
-  console.log(workout);
-  workout.id = _workouts.length;
-  // add to global array of workouts
   _workouts.push(workout);
 
-  // clear input form and hide
+  // render in workout sidebar
+  workout.renderCard(_list);
+  workout.renderMapMarker(map);
+
+  // clear and close form
   form.reset();
   form.classList.add("hidden");
-
-  // render marker
-  _renderMarker(workout);
-  // add to list
-  _renderWorkoutCard(workout);
 };
 
 form.addEventListener("submit", _handleFormSubmit);
