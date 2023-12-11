@@ -15,6 +15,8 @@ const durationField = form.querySelector("#workout-duration");
 const elevGainField = form.querySelector("#workout-elev-gain");
 const cadenceField = form.querySelector("#workout-cadence");
 
+const _list = document.querySelector(".workout-list");
+
 const _getFormData = form => {
   let type;
   const fieldIds = [
@@ -50,6 +52,21 @@ const _toCamelCase = text =>
     )
     .join("");
 
+_list.addEventListener("click", function (e) {
+  const target = e.target.closest(".workout");
+
+  if (!target) return;
+
+  const workout = _workouts.find(item => item.id === Number(target.dataset.id));
+  workout && map.setView(workout.coords);
+});
+
+const _openForm = () => {
+  const type = typeSelect.value;
+  _changeFormType(type);
+  form.classList.remove("hidden");
+};
+
 const handleMapClick = function (mapEvent) {
   // show register form
   form.classList.remove("hidden");
@@ -74,7 +91,6 @@ navigator.geolocation.getCurrentPosition(pos => {
 
 const _checkValid = (...values) => true;
 const _checkPositive = (...values) => true;
-const _list = document.querySelector(".workout-list");
 
 const _changeFormType = type => {
   if (type === "running") {
