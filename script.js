@@ -1,77 +1,88 @@
 "use strict";
 
-const map = L.map("map");
-// "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-const tileMapUrl =
-  "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}";
+class App {
+  #map;
+  #workouts = [];
+  #list;
+  #event;
+  #form;
 
-const _workouts = [];
-let _event;
+  constructor() {
+    this.#event = null;
+    this.#map = L.map("map");
+    this.#form = new Form(".register-record");
+    this.#list = document.querySelector(".workout-list");
+    this.#list.addEventListener("click", e => {
+      const target = e.target.closest(".workout");
 
-const _list = document.querySelector(".workout-list");
+      if (!target) return;
 
-const form = new Form(".register-record");
+      const workout = this.#workouts.find(
+        item => item.id === Number(target.dataset.id)
+      );
+      workout && this.#map.setView(workout.coords);
+    });
 
-_list.addEventListener("click", function (e) {
-  const target = e.target.closest(".workout");
+    this.#form.on("submit", this._handleFormSubmit);
 
-  if (!target) return;
-
-  const workout = _workouts.find(item => item.id === Number(target.dataset.id));
-  workout && map.setView(workout.coords);
-});
-
-const handleMapClick = function (mapEvent) {
-  // show register form
-  form.show();
-
-  _event = mapEvent;
-};
-
-navigator.geolocation.getCurrentPosition(pos => {
-  const {
-    coords: { latitude, longitude },
-  } = pos;
-
-  map.setView([latitude, longitude], 13);
-  L.tileLayer(tileMapUrl, {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
-
-  map.on("click", handleMapClick);
-});
-
-const _handleFormSubmit = function (e) {
-  e.preventDefault();
-
-  try {
-    const { type, data } = form.getParsedData();
-    // TODO: later change here!
-    const id = _workouts.length;
-    let workout;
-
-    const params = { ...data, coords: _event.latlng, id, type };
-
-    if (type === "running") {
-      workout = new Running(params);
-    } else {
-      workout = new Cycling(params);
-    }
-
-    _workouts.push(workout);
-
-    // render in workout sidebar
-    workout.renderCard(_list);
-    workout.renderMapMarker(map);
-
-    // clear and close form
-    form.reset();
-    form.hide();
-  } catch (e) {
-    alert(e);
-    return;
+    this._initializeMap();
   }
-};
 
-form.on("submit", _handleFormSubmit);
+  _handleFormSubmit = e => {
+    e.preventDefault();
+
+    try {
+      const { type, data } = this.#form.getParsedData();
+      // TODO: later change here!
+      const id = this.#workouts.length;
+      let workout;
+
+      const params = { ...data, coords: this.#event.latlng, id, type };
+
+      if (type === "running") {
+        workout = new Running(params);
+      } else {
+        workout = new Cycling(params);
+      }
+
+      this.#workouts.push(workout);
+
+      // render in workout sidebar
+      workout.renderCard(this.#list);
+      workout.renderMapMarker(this.#map);
+
+      // clear and close form
+      this.#form.reset();
+      this.#form.hide();
+    } catch (e) {
+      alert(e);
+      return;
+    }
+  };
+
+  _initializeMap() {
+    const tileMapUrl =
+      "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}";
+    navigator.geolocation.getCurrentPosition(pos => {
+      const {
+        coords: { latitude, longitude },
+      } = pos;
+
+      this.#map.setView([latitude, longitude], 13);
+      L.tileLayer(tileMapUrl, {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(this.#map);
+
+      this.#map.on("click", this._handleMapClick);
+    });
+  }
+
+  _handleMapClick = mapEvent => {
+    // show register form
+    this.#form.show();
+    this.#event = mapEvent;
+  };
+}
+
+const app = new App();
