@@ -1,33 +1,37 @@
 class Form {
   #parent;
-  #fieldIds = {
-    type: "#workout-type",
-    data: {
+  #typeField;
+  #dataFields = {};
+
+  constructor(parentSelector) {
+    const dataFieldIds = {
       distance: "#workout-distance",
       duration: "#workout-duration",
       cadence: "#workout-cadence",
       elevGain: "#workout-elev-gain",
-    },
-  };
+    };
 
-  constructor(parentSelector) {
     this.#parent = document.querySelector(parentSelector);
+    this.#typeField = this.#parent.querySelector("#workout-type");
 
-    this.#parent
-      .querySelector(this.#fieldIds.type)
-      .addEventListener("change", () => {
-        this._changeFormType();
-        // this._clear();
-      });
+    Object.entries(dataFieldIds).forEach(([key, value]) => {
+      this.#dataFields[key] = this.#parent.querySelector(value);
+    });
+
+    this.#typeField.addEventListener("change", () => {
+      this._changeFormType();
+      // this._clear();
+    });
   }
 
   get type() {
-    return this.#parent.querySelector(this.#fieldIds.type).value.toLowerCase();
+    return this.#typeField.value.toLowerCase();
   }
+
   _rawData() {
     const data = {};
-    Object.keys(this.#fieldIds.data).forEach(key => {
-      data[key] = this.#parent.querySelector(this.#fieldIds.data[key]).value;
+    Object.entries(this.#dataFields).forEach(([key, field]) => {
+      data[key] = field.value;
     });
 
     return { type: this.type, data };
@@ -53,18 +57,16 @@ class Form {
       throw Error("values must be positive numbers");
 
     const data = {};
-    Object.keys(rawData).forEach(key => (data[key] = Number(rawData[key])));
+    Object.entries(rawData).forEach(
+      ([key, value]) => (data[key] = Number(value))
+    );
 
     return { type, data };
   }
 
   show() {
-    const distanceField = this.#parent.querySelector(
-      this.#fieldIds.data["distance"]
-    );
-
     this.#parent.classList.remove("hidden");
-    distanceField.focus();
+    this.#dataFields["distance"].focus();
   }
 
   hide() {
@@ -73,22 +75,19 @@ class Form {
 
   reset() {
     this.#parent.reset();
+    this._changeFormType();
   }
 
   _changeFormType() {
-    const elevGainField = this.#parent.querySelector(
-      this.#fieldIds.data["elevGain"]
-    );
-    const cadenceField = this.#parent.querySelector(
-      this.#fieldIds.data["cadence"]
-    );
+    const elevGainField = this.#dataFields.elevGain.closest(".form-label");
+    const cadenceField = this.#dataFields.cadence.closest(".form-label");
 
     if (this.type === "running") {
-      elevGainField.closest(".form-label").classList.add("hidden-field");
-      cadenceField.closest(".form-label").classList.remove("hidden-field");
+      elevGainField.classList.add("hidden-field");
+      cadenceField.classList.remove("hidden-field");
     } else {
-      elevGainField.closest(".form-label").classList.remove("hidden-field");
-      cadenceField.closest(".form-label").classList.add("hidden-field");
+      elevGainField.classList.remove("hidden-field");
+      cadenceField.classList.add("hidden-field");
     }
   }
 
