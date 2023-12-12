@@ -63,19 +63,27 @@ class App {
   _initializeMap() {
     const tileMapUrl =
       "https://webst01.is.autonavi.com/appmaptile?style=7&x={x}&y={y}&z={z}";
-    navigator.geolocation.getCurrentPosition(pos => {
-      const {
-        coords: { latitude, longitude },
-      } = pos;
 
-      this.#map.setView([latitude, longitude], 13);
-      L.tileLayer(tileMapUrl, {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(this.#map);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const {
+            coords: { latitude, longitude },
+          } = pos;
 
-      this.#map.on("click", this._handleMapClick);
-    });
+          this.#map.setView([latitude, longitude], 13);
+          L.tileLayer(tileMapUrl, {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          }).addTo(this.#map);
+
+          this.#map.on("click", this._handleMapClick);
+        },
+        () => {
+          alert("Could not get your location");
+        }
+      );
+    }
   }
 
   _handleMapClick = mapEvent => {
