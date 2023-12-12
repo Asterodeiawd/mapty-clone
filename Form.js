@@ -70,7 +70,9 @@ class Form {
   }
 
   hide() {
+    this.#parent.style = "display: none";
     this.#parent.classList.add("hidden");
+    setTimeout(() => (this.#parent.style = "display: grid"), 1000);
   }
 
   reset() {
