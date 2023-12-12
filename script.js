@@ -15,6 +15,8 @@ const durationField = form.querySelector("#workout-duration");
 const elevGainField = form.querySelector("#workout-elev-gain");
 const cadenceField = form.querySelector("#workout-cadence");
 
+const _list = document.querySelector(".workout-list");
+
 const _getFormData = form => {
   let type;
   const fieldIds = [
@@ -49,67 +51,6 @@ const _toCamelCase = text =>
       index ? word[0].toUpperCase().concat(word.slice(1)) : word
     )
     .join("");
-
-const _renderWorkoutCard = workout => {
-  let html;
-
-  if (workout.type === "running") {
-    html = `<li class="workout workout--running" data-id=${workout.id}>
-      <h2 class="workout-title">
-        Running on <span class="workout-date">${workout.date}</span>
-      </h2>
-      <div class="workout-details">
-        <span class="detail-icon">🏃‍♂️</span>
-        <span class="detail-value">${workout.distance}</span>
-        <span class="detail-unit">km</span>
-      </div>
-      <div class="workout-details">
-        <span class="detail-icon">⏱</span>
-        <span class="detail-value">${workout.duration}</span>
-        <span class="detail-unit">min</span>
-      </div>
-      <div class="workout-details">
-        <span class="detail-icon">⚡️</span>
-        <span class="detail-value">${workout.speed}</span>
-        <span class="detail-unit">min/km</span>
-      </div>
-      <div class="workout-details">
-        <span class="detail-icon">🦶🏼</span>
-        <span class="detail-value">${workout.cadence}</span>
-        <span class="detail-unit">spm</span>
-      </div>
-    </li>`;
-  } else {
-    html = `
-    <li class="workout workout--cycling" data-id=${workout.id}>
-      <h2 class="workout-title">
-        Cycling on <span class="workout-date">${workout.date}</span>
-      </h2>
-      <div class="workout-details">
-        <span class="detail-icon">🚴‍♀️</span>
-        <span class="detail-value">${workout.distance}</span>
-        <span class="detail-unit">km</span>
-      </div>
-      <div class="workout-details">
-        <span class="detail-icon">⏱</span>
-        <span class="detail-value">${workout.duration}</span>
-        <span class="detail-unit">min</span>
-      </div>
-      <div class="workout-details">
-        <span class="detail-icon">⚡️</span>
-        <span class="detail-value">${workout.speed}</span>
-        <span class="detail-unit">km/h</span>
-      </div>
-      <div class="workout-details">
-        <span class="detail-icon">⛰</span>
-        <span class="detail-value">${workout.elevGain}</span>
-        <span class="detail-unit">m</span>
-      </div>
-    </li>`;
-  }
-
-  _list.insertAdjacentHTML("afterbegin", html);
-};
 
 _list.addEventListener("click", function (e) {
   const target = e.target.closest(".workout");
@@ -150,7 +91,6 @@ navigator.geolocation.getCurrentPosition(pos => {
 
 const _checkValid = (...values) => true;
 const _checkPositive = (...values) => true;
-const _list = document.querySelector(".workout-list");
 
 const _changeFormType = type => {
   if (type === "running") {
