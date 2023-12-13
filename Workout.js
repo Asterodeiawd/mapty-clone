@@ -9,12 +9,12 @@ class Workout {
   #date;
   #icon;
 
-  constructor({ id, type, distance, duration, coords }) {
+  constructor({ id, type, distance, duration, coords, date }) {
     this.#id = id;
     this.#type = type;
     this.#distance = distance;
     this.#duration = duration;
-    this.#date = new Date();
+    this.#date = date ?? new Date();
     this.#coords = coords;
     this.#icon = "";
   }
@@ -91,15 +91,32 @@ class Workout {
     marker.addTo(map);
     marker.bindPopup(popup).openPopup();
   }
+
+  static parse(plainObject) {
+    if (plainObject.type === "running") return new Running(plainObject);
+    else if (plainObject.type === "cycling") return new Cycling(plainObject);
+  }
 }
 
 class Running extends Workout {
   #cadence;
 
-  constructor({ id, type, distance, duration, coords, cadence }) {
-    super({ id, type, distance, duration, coords });
+  constructor({ id, type, distance, duration, coords, cadence, date }) {
+    super({ id, type, distance, duration, coords, date });
     this.#cadence = cadence;
     this.icon = "🏃‍♂️";
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      type: this.type,
+      date: this.date,
+      coords: this.coords,
+      distance: this.distance,
+      duration: this.duration,
+      cadence: this.cadence,
+    };
   }
 
   get cadence() {
@@ -144,6 +161,18 @@ class Cycling extends Workout {
     super({ id, type, distance, duration, coords });
     this.#elevGain = elevGain;
     this.icon = "🚴";
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      type: this.type,
+      date: this.date,
+      coords: this.coords,
+      distance: this.distance,
+      duration: this.duration,
+      elevGain: this.elevGain,
+    };
   }
 
   get speed() {

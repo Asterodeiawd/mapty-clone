@@ -25,7 +25,11 @@ class App {
 
     this.#form.on("submit", this._handleFormSubmit);
 
+    // load local data
+    this._deserialize();
+
     this._initializeMap();
+    this._initialRender();
   }
 
   _handleFormSubmit = e => {
@@ -54,6 +58,9 @@ class App {
       // clear and close form
       this.#form.reset();
       this.#form.hide();
+
+      // save to localstorage
+      this._serialize();
     } catch (e) {
       alert(e);
       return;
@@ -91,6 +98,25 @@ class App {
     this.#form.show();
     this.#event = mapEvent;
   };
+
+  _initialRender() {
+    this.#workouts?.forEach(workout => workout.renderCard());
+
+    this.#map.on("load", () => {
+      this.#workouts?.forEach(workout => workout.renderMapMarker());
+    });
+  }
+
+  _serialize() {
+    localStorage.setItem("workouts", JSON.stringify(this.#workouts));
+  }
+
+  _deserialize() {
+    const plainWorkouts = JSON.parse(localStorage.getItem("workouts"));
+    const workouts = plainWorkouts?.map(obj => Workout.parse(obj));
+
+    this.#workouts = workouts ?? [];
+  }
 }
 
 const app = new App();
