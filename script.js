@@ -117,6 +117,11 @@ class App {
 
     this.#workouts = workouts ?? [];
   }
+
+  clearLocalStorage() {
+    localStorage.removeItem("workouts");
+    location.reload();
+  }
 }
 
 const app = new App();
