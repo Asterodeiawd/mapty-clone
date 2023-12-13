@@ -14,7 +14,7 @@ class Workout {
     this.#type = type;
     this.#distance = distance;
     this.#duration = duration;
-    this.#date = date ?? new Date();
+    this.#date = date ? new Date(date) : new Date();
     this.#coords = coords;
     this.#icon = "";
   }
@@ -101,7 +101,7 @@ class Workout {
 class Running extends Workout {
   #cadence;
 
-  constructor({ id, type, distance, duration, coords, cadence, date }) {
+  constructor({ id, type, distance, duration, coords, cadence, date = null }) {
     super({ id, type, distance, duration, coords, date });
     this.#cadence = cadence;
     this.icon = "🏃‍♂️";
@@ -157,8 +157,8 @@ class Running extends Workout {
 class Cycling extends Workout {
   #elevGain;
 
-  constructor({ id, type, distance, duration, coords, elevGain }) {
-    super({ id, type, distance, duration, coords });
+  constructor({ id, type, distance, duration, coords, elevGain, date = null }) {
+    super({ id, type, distance, duration, coords, date });
     this.#elevGain = elevGain;
     this.icon = "🚴";
   }

@@ -100,10 +100,10 @@ class App {
   };
 
   _initialRender() {
-    this.#workouts?.forEach(workout => workout.renderCard());
+    this.#workouts?.forEach(workout => workout.renderCard(this.#list));
 
     this.#map.on("load", () => {
-      this.#workouts?.forEach(workout => workout.renderMapMarker());
+      this.#workouts?.forEach(workout => workout.renderMapMarker(this.#map));
     });
   }
 
