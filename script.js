@@ -7,6 +7,7 @@ class App {
   #event;
   #form;
   #menu = document.querySelector(".main-menu");
+  #editingID;
 
   constructor() {
     this.#event = null;
@@ -46,6 +47,17 @@ class App {
     this._initialRender();
   }
 
+  _handleCardEdit(event) {
+    this.#form.show("edit");
+
+    const card = event.target.closest(".workout");
+    const id = Number(card.dataset.id);
+    const workout = this.#workouts.find(workout => workout.id === id);
+
+    this.#editingID = id;
+    this.#form.setValue(workout);
+  }
+
   _handleCardRemove(event) {
     const card = event.target.closest(".workout");
 
@@ -63,9 +75,7 @@ class App {
   }
 
   _handleFormSubmit = e => {
-    e.preventDefault();
-
-    try {
+    const addWorkout = () => {
       const { type, data } = this.#form.getParsedData();
       // TODO: later change here!
       const id = this.#workouts.length;
@@ -91,6 +101,33 @@ class App {
 
       // save to localstorage
       this._serialize();
+    };
+
+    const editWorkout = () => {
+      let workout;
+      const { type, data, edit } = this.#form.getParsedData();
+      const params = { ...data, ...edit, id: this.#editingID, type };
+
+      if (type === "running") {
+        workout = new Running(params);
+      } else {
+        workout = new Cycling(params);
+      }
+
+      const index = this.#workouts.findIndex(
+        workout => workout.id === this.#editingID
+      );
+      this.#workouts.splice(index, 1, workout);
+
+      this._serialize();
+      location.reload();
+    };
+
+    e.preventDefault();
+
+    try {
+      if (this.#form.mode === "add") addWorkout();
+      else editWorkout();
     } catch (e) {
       alert(e);
       return;
