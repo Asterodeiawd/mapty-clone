@@ -30,8 +30,8 @@ class Form {
       this.#editFields[key] = this.#parent.querySelector(value);
     });
 
-    this.#typeField.addEventListener("change", () => {
-      this._changeFormType("running");
+    this.#typeField.addEventListener("change", e => {
+      this._changeFormType(e.target.value);
       // this._clear();
     });
   }
