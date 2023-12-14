@@ -150,6 +150,22 @@ body {
   line-height: 1;
 }
 
+.register-record.edit {
+  height: 15rem;
+}
+
+.edit-field {
+  display: none;
+}
+
+.edit .edit-field {
+  display: flex;
+}
+
+.form-label.expended-field {
+  grid-column: 1/-1;
+}
+
 .form-field {
   width: 100%;
   font-size: 1.4rem;
@@ -165,6 +181,7 @@ body {
   outline: none;
   background-color: #fff;
 }
+
 .label-text {
   flex: 0 0 50%;
   color: var(--color-light--2);
