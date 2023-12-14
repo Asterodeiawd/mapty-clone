@@ -58,6 +58,50 @@ body {
   height: 100%;
 }
 
+.main-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 2rem 1rem;
+  padding-top: 0;
+}
+
+.menu-item {
+  list-style: none;
+  font-size: 1.2em;
+}
+
+.menu-item .btn,
+.menu-item span {
+  font-size: inherit;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.menu-item select {
+  padding: 0.2rem 0.4rem;
+}
+
+.menu-item option {
+  font-size: inherit;
+}
+
+.menu-item .btn {
+  padding: 0.3rem 0.6rem;
+  background-color: var(--color-background-lighter);
+  border: none;
+  cursor: pointer;
+}
+
+.menu-item #sort-key {
+  margin-left: 0.6rem;
+}
+
+.danger {
+  color: #ff6b6b;
+}
+
 .workout-container {
   display: flex;
   flex-direction: column;
@@ -158,10 +202,29 @@ body {
 }
 
 .workout-title {
-  grid-column: 1 / -1;
+  grid-column: 1 / -2;
   font-size: 1.7rem;
   font-weight: 600;
   color: var(--color-light--2);
+}
+
+.operations {
+  display: flex;
+  justify-self: end;
+  gap: 1rem;
+}
+
+.workout-operation {
+  background-color: var(--color-background-lighter);
+  border: none;
+  cursor: pointer;
+}
+
+.operation-icon {
+  height: 1.8rem;
+  width: 1.8rem;
+  stroke-width: 2px;
+  color: var(--color-light);
 }
 
 .workout-details {

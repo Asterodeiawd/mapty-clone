@@ -29,6 +29,20 @@
           <img src="imgs/logo.png" alt="pin" class="logo" />
           <!-- <h1>mapty</h1> -->
         </div>
+        <menu class="main-menu">
+          <li class="menu-item">
+            <button class="btn danger" id="remove-all">remove all</button>
+          </li>
+          <li class="menu-item">
+            <span> sort by </span>
+            <select id="sort-key">
+              <option value="none">not sort</option>
+              <option value="distance">distance</option>
+              <option value="distance">duration</option>
+            </select>
+            <span class="direction">-</span>
+          </li>
+        </menu>
         <div class="workout-container">
           <form class="register-record hidden">
             <label class="form-label">
