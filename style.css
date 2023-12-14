@@ -94,7 +94,7 @@ body {
   cursor: pointer;
 }
 
-.menu-item .sort-key {
+.menu-item #sort-key {
   margin-left: 0.6rem;
 }
 
