@@ -14,6 +14,16 @@ class App {
     this.#form = new Form(".register-record");
     this.#list = document.querySelector(".workout-list");
     this.#list.addEventListener("click", e => {
+      // card operations
+      if (e.target.closest(".workout-operation.edit")) {
+        this._handleCardEdit(e);
+        return;
+      } else if (e.target.closest(".workout-operation.remove")) {
+        this._handleCardRemove(e);
+        return;
+      }
+
+      // move map view
       const target = e.target.closest(".workout");
 
       if (!target) return;
@@ -34,6 +44,17 @@ class App {
 
     this._initializeMap();
     this._initialRender();
+  }
+
+  _handleCardRemove(event) {
+    const card = event.target.closest(".workout");
+
+    console.log(card);
+    const id = Number(card.dataset.id);
+
+    this.#workouts = this.#workouts.filter(workout => workout.id !== id);
+    this._serialize();
+    location.reload();
   }
 
   _initializeMenu() {
