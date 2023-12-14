@@ -6,6 +6,7 @@ class App {
   #list;
   #event;
   #form;
+  #menu = document.querySelector(".main-menu");
 
   constructor() {
     this.#event = null;
@@ -23,6 +24,9 @@ class App {
       workout && this.#map.setView(workout.coords);
     });
 
+    // menu setup
+    this._initializeMenu();
+
     this.#form.on("submit", this._handleFormSubmit);
 
     // load local data
@@ -30,6 +34,11 @@ class App {
 
     this._initializeMap();
     this._initialRender();
+  }
+
+  _initializeMenu() {
+    const removeAll = this.#menu.querySelector("#remove-all");
+    removeAll.addEventListener("click", () => this.clearLocalStorage());
   }
 
   _handleFormSubmit = e => {
@@ -119,6 +128,8 @@ class App {
   }
 
   clearLocalStorage() {
+    if (!localStorage.getItem("workouts")) return;
+
     localStorage.removeItem("workouts");
     location.reload();
   }
